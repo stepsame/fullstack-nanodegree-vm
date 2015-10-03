@@ -34,7 +34,7 @@ def countPlayers():
     conn = connect()
     c = conn.cursor()
     c.execute("SELECT count(*) as num FROM players;")
-    result = c.fetchone()
+    result = c.fetchone()[0]
     conn.close()
     return result
 
@@ -110,7 +110,7 @@ def swissPairings():
     standings = playerStandings()
     pairs = []
     while standings:
-        pair = standings.pop() + standings.pop();
+        pair = standings.pop()[:2] + standings.pop()[:2];
         pairs.append(pair)
     return pairs
 
