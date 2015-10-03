@@ -13,14 +13,30 @@ def connect():
 
 def deleteMatches():
     """Remove all the match records from the database."""
+    conn = connect()
+    c = conn.cursor()
+    c.execute("DELETE FROM matches;")
+    conn.commit()
+    conn.close()
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
+    conn = connect()
+    c = conn.cursor()
+    c.execute("DELETE FROM players;")
+    conn.commit()
+    conn.close()
 
 
 def countPlayers():
     """Returns the number of players currently registered."""
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT count(*) as num FROM players;")
+    result = c.fetchone()
+    conn.close()
+    return result
 
 
 def registerPlayer(name):
@@ -32,6 +48,11 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
+    conn = connect()
+    c = conn.cursor()
+    c.execute("INSERT INTO players (name, wins, matches) VALUES (%s, 0, 0);", (name,))
+    conn.commit()
+    conn.close()
 
 
 def playerStandings():
@@ -47,6 +68,12 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT * FROM players ORDER BY wins;")
+    result = c.fetchall()
+    conn.close()
+    return result
 
 
 def reportMatch(winner, loser):
@@ -56,6 +83,13 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    conn = connect()
+    c = conn.cursor()
+    c.execute("UPDATE players SET wins = wins + 1, matches = matches + 1 WHERE id = %s", (winner,))
+    c.execute("UPDATE players SET matches = matches + 1 WHERE id = %s", (loser,))
+    c.execute("INSERT INTO matches VALUES (%s, %s)", (winner, loser))
+    conn.commit()
+    conn.close()
  
  
 def swissPairings():
@@ -73,5 +107,11 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+    standings = playerStandings()
+    pairs = []
+    while standings:
+        pair = standings.pop() + standings.pop();
+        pairs.append(pair)
+    return pairs
 
 
