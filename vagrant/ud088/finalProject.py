@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect, jsonify
+from flask import Flask, render_template, request, url_for, redirect, jsonify, flash
 
 app = Flask(__name__)
 
@@ -54,6 +54,7 @@ def newRestaurant():
 		restaurant = Restaurant(name = request.form['restaurant_name'])
 		session.add(restaurant)
 		session.commit()
+		flash("New Restaurant Created")
 		return redirect(url_for('showRestaurants'))
 
 
@@ -67,6 +68,7 @@ def editRestaurant(restaurant_id):
 		restaurant.name = request.form['restaurant_name']
 		session.add(restaurant)
 		session.commit()
+		flash("Restaurant Successfully Edited")
 		return redirect(url_for('showRestaurants'))
 
 @app.route('/restaurant/<int:restaurant_id>/delete', methods = ['GET', 'POST'])
@@ -78,6 +80,7 @@ def deleteRestaurant(restaurant_id):
 	else:
 		session.delete(restaurant)
 		session.commit()
+		flash("Restaurant Successfully Deleted")
 		return redirect(url_for('showRestaurants'))
 
 @app.route('/restaurant/<int:restaurant_id>')
@@ -98,6 +101,7 @@ def newMenuItem(restaurant_id):
 		item = MenuItem(name = request.form['item_name'], restaurant_id = restaurant_id)
 		session.add(item)
 		session.commit()
+		flash("Menu Item Created")
 		return redirect(url_for('showMenu', restaurant_id = restaurant_id))
 
 
@@ -112,6 +116,7 @@ def editMenuItem(restaurant_id, menu_id):
 		item.name = request.form['item_name']
 		session.add(item)
 		session.commit()
+		flash("Menu Item Successfully Edited")
 		return redirect(url_for('showMenu', restaurant_id = restaurant_id))
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete', methods = ['GET', 'POST'])
@@ -124,8 +129,10 @@ def deleteMenuItem(restaurant_id, menu_id):
 	else:
 		session.delete(item)
 		session.commit()
+		flash("Menu Item Successfully Deleted")
 		return redirect(url_for('showMenu', restaurant_id = restaurant_id))
 
 if __name__ == '__main__':
+	app.secret_key = 'super_secret_key'
 	app.debug = True
 	app.run(host = '0.0.0.0', port = 5000)
