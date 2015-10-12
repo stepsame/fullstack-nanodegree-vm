@@ -2,7 +2,7 @@
 <body>
 	<h1>Restaurants</h1>
 
-	<a href="#">Add New Restaurant</a>
+	<a href="{{url_for('newRestaurant')}}">Add New Restaurant</a>
 
 	{% if not restaurants %}
 		<p>This is no restaurant</p>
@@ -10,8 +10,8 @@
 	
 	{% for restaurant in restaurants %}
 		<p>{{restaurant.name}}</p>
-		<a href="#">Edit</a>
-		<a href="#">Delete</a>
+		<a href="{{url_for('editRestaurant', restaurant_id = restaurant.id)}}">Edit</a>
+		<a href="{{url_for('deleteRestaurant', restaurant_id = restaurant.id)}}">Delete</a>
 	{% endfor %}
 </body>
 </html>
